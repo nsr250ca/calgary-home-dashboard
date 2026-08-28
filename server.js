@@ -36,13 +36,30 @@ async function news() {
   return { items };
 }
 
-// Yahoo's public chart endpoint provides price history without an API key. It may be replaced
-// with a licensed quote provider for commercial deployments.
+// Yahoo exposes two public chart hostnames. Some cloud networks intermittently reject one of
+// them, so use the alternate hostname before reporting a market outage to the browser.
+async function yahooChart(symbol) {
+  const encoded = encodeURIComponent(symbol);
+  const hosts = ['query1.finance.yahoo.com', 'query2.finance.yahoo.com'];
+  let lastError;
+  for (const host of hosts) {
+    try {
+      return await json(`https://${host}/v8/finance/chart/${encoded}?range=14d&interval=1d`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; CalgaryHomeDashboard/1.0)',
+          'Accept': 'application/json',
+          'Referer': 'https://finance.yahoo.com/'
+        }
+      });
+    } catch (error) { lastError = error; }
+  }
+  throw lastError || new Error('Yahoo Finance unavailable');
+}
 async function markets() {
   const symbols = ['^GSPTSE', '^GSPC', '^NDX', 'GC=F', 'CAD=X'];
-  const result = await cached('markets', 4 * 60_000, async () => Promise.all(symbols.map(async symbol => {
-      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=14d&interval=1d`;
-      const chart = await json(url);
+  const result = await cached('markets', 4 * 60_000, async () => {
+    const settled = await Promise.allSettled(symbols.map(async symbol => {
+      const chart = await yahooChart(symbol);
       const data = chart.chart.result?.[0];
       if (!data) throw new Error('No chart data');
       const quote = data.indicators.quote[0];
@@ -51,7 +68,11 @@ async function markets() {
       const previous = meta.previousClose ?? points.at(-2)?.value;
       const price = meta.regularMarketPrice ?? points.at(-1)?.value;
       return { symbol, price, change: price - previous, changePercent: ((price - previous) / previous) * 100, points };
-  })));
+    }));
+    const successful = settled.filter(result => result.status === 'fulfilled').map(result => result.value);
+    if (!successful.length) throw new Error('All market providers failed');
+    return successful;
+  });
   return result;
 }
 async function transit() {
