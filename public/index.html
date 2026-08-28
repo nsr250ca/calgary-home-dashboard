@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#eff5f7" /><title>Calgary — Today</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div><p class="eyebrow" id="date">CALGARY, ALBERTA</p><h1>Good morning<span class="period">.</span></h1></div>
+      <div class="clock"><time id="clock">--:--</time><span id="updated">Syncing live data</span></div>
+      <button class="settings-button" id="settingsButton" aria-label="Open settings">⌘</button>
+    </header>
+    <section class="dashboard" aria-label="Your live information dashboard">
+      <article class="card weather hero-card" id="weatherCard"><div class="card-head"><span>NOW / CALGARY</span><button data-refresh="weather" aria-label="Refresh weather">↻</button></div><div class="weather-main"><div><div class="temperature" id="temperature">—°</div><p id="condition">Loading conditions</p></div><div class="weather-detail"><span>FEELS <b id="feels">—</b></span><span>WIND <b id="wind">—</b></span><span>HUMID <b id="humidity">—</b></span></div></div><div class="daylight"><div class="sun-labels"><span id="sunrise">Sunrise —</span><span id="daylightLength">— daylight</span><span id="sunset">Sunset —</span></div><div class="sun-arc"><i id="sunDot"></i></div></div></article>
+      <article class="card forecast" id="forecastCard"><div class="card-head"><span>7-DAY OUTLOOK</span><button data-refresh="weather" aria-label="Refresh forecast">↻</button></div><div id="forecastRows" class="forecast-rows"><p class="loading">Loading forecast…</p></div></article>
+      <article class="card rates" id="ratesCard"><div class="card-head"><span>CAD EXCHANGE</span><button data-refresh="rates" aria-label="Refresh exchange rates">↻</button></div><div class="usd-rate" id="usdRate">US$1 = CA$—</div><div class="rate-list" id="rateList"></div></article>
+      <article class="card transit" id="transitCard"><div class="card-head"><span>TRANSIT / DOWNTOWN</span><button data-refresh="transit" aria-label="Refresh transit">↻</button></div><div class="transit-routes" id="transitRows"></div><p class="card-note">Live GTFS feed required — set yours in server configuration.</p></article>
+      <article class="card news" id="newsCard"><div class="card-head"><span>CALGARY BRIEFING</span><button data-refresh="news" aria-label="Refresh local news">↻</button></div><div id="newsList"><p class="loading">Loading local news…</p></div></article>
+      <article class="card holidays"><div class="card-head"><span>UP NEXT / HOLIDAYS</span><span class="cal-icon">◫</span></div><div id="holidayList" class="holiday-list"></div></article>
+      <section class="markets-section"><div class="section-head"><span>MARKETS</span><small>10 DAY TREND · CAD / USD</small></div><div class="markets-grid" id="marketsGrid"></div></section>
+    </section>
+  </main>
+  <dialog id="settings"><form method="dialog"><div class="dialog-head"><div><p class="eyebrow">LOCAL PREFERENCES</p><h2>Dashboard settings</h2></div><button aria-label="Close settings">×</button></div><label>Greeting name <input id="nameInput" placeholder="Optional" maxlength="28" /></label><label>Transit stop note <input id="stopInput" placeholder="Downtown station / stop" maxlength="60" /></label><p>Preferences are stored only in this browser. For real-time transit, set <code>CALGARY_TRANSIT_FEED_URL</code> before starting the local server.</p><menu><button value="cancel">Cancel</button><button id="saveSettings" value="default">Save settings</button></menu></form></dialog>
+  <template id="marketTemplate"><article class="card market-card"><div class="card-head"><span class="market-name"></span><button data-refresh="markets" aria-label="Refresh market">↻</button></div><div class="market-price"></div><div class="market-change"></div><div class="chart-wrap"><svg class="sparkline" viewBox="0 0 300 74" preserveAspectRatio="none"></svg><div class="chart-labels"><span></span><span>Today</span></div></div></article></template>
+  <script src="app.js" type="module"></script>
+</body></html>
