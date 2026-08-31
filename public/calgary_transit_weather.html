@@ -143,22 +143,22 @@
 
     </header>
 
-    <!-- CRITICAL TRANSIT SERVICE ALERTS BANNER -->
+    <!-- CRITICAL TRANSIT SERVICE ALERTS BANNER (TRADITIONAL CHINESE) -->
     <div id="transit-alerts-banner" class="eink-border-b bg-amber-100 dark:bg-amber-950/80 p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs border-l-8 border-amber-600">
       <div class="flex items-start gap-2.5">
-        <span class="bg-black text-white px-2 py-0.5 font-mono font-bold text-xs">🚌 TRANSIT ALERT</span>
+        <span class="bg-black text-white px-2 py-0.5 font-bold text-xs">🚌 公交服務提示</span>
         <div>
           <div class="font-bold text-sm text-neutral-900 dark:text-amber-100 flex items-center gap-2">
-            <span>Route 114 & 301 Service Notice</span>
-            <span class="bg-amber-800 text-white text-[10px] px-1.5 py-0.2 uppercase font-mono">Detour Active</span>
+            <span id="alert-title-text">114號及301號路線特別服務通知</span>
+            <span id="alert-badge-text" class="bg-amber-800 text-white text-[10px] px-1.5 py-0.2 uppercase font-bold">現正改道</span>
           </div>
-          <p class="text-neutral-800 dark:text-amber-200 text-xs mt-0.5">
-            ⚠️ <strong>Route 114:</strong> Detour near Country Hills Blvd. Expect +10–15 min delays. | <strong>Route 301:</strong> Normal express frequency.
+          <p id="alert-body-text" class="text-neutral-800 dark:text-amber-200 text-xs mt-0.5">
+            ⚠️ <strong>114 號路線：</strong> Country Hills Blvd 附近現正實施改道，預計延誤約 10 至 15 分鐘。 | <strong>301 號快線：</strong> 班次服務正常。
           </p>
         </div>
       </div>
-      <div class="font-mono text-[11px] text-neutral-600 dark:text-amber-300 whitespace-nowrap self-end sm:self-auto">
-        Updated 10m ago
+      <div id="alert-time-text" class="font-mono text-[11px] text-neutral-600 dark:text-amber-300 whitespace-nowrap self-end sm:self-auto">
+        更新於 10 分鐘前
       </div>
     </div>
 
@@ -188,7 +188,7 @@
           <div class="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs bg-neutral-100 dark:bg-zinc-800/80 p-2 border-2 border-black dark:border-white">
             <div class="flex items-center gap-1.5 font-bold">
               <i class="fa-solid fa-street-view text-emerald-600"></i>
-              <span id="gps-status-label">Searching for closest Route 114 & 301 stops...</span>
+              <span id="gps-status-label">正在搜尋最近的 114 及 301 號巴士站...</span>
             </div>
             <span id="transit-live-indicator" class="inline-flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 border border-black dark:border-white bg-white dark:bg-black">
               <span class="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse"></span>
@@ -209,7 +209,7 @@
               <i class="fa-solid fa-newspaper text-neutral-700 dark:text-neutral-300"></i>
               <span>卡加利社區消息 Calgary Local News & Notices</span>
             </div>
-            <span class="text-[10px] font-mono text-neutral-500">Traditional Chinese Summary</span>
+            <span class="text-[10px] font-mono text-neutral-500">繁體中文簡報</span>
           </div>
           <div class="space-y-1.5 text-xs">
             <div class="flex items-start gap-2">
@@ -228,8 +228,8 @@
         </div>
 
         <div class="mt-3 pt-2 border-t border-neutral-300 dark:border-neutral-700 flex justify-between items-center text-xs text-neutral-500 font-mono">
-          <span id="gps-accuracy-info">GPS Accuracy: ±-- meters</span>
-          <span id="transit-updated-time">Updated: --:--:--</span>
+          <span id="gps-accuracy-info">GPS 準確度: ±-- 米</span>
+          <span id="transit-updated-time">更新時間: --:--:--</span>
         </div>
 
       </section>
@@ -264,7 +264,7 @@
           <div id="forecast-container" class="divide-y divide-neutral-300 dark:divide-neutral-700">
             <!-- Loading placeholder -->
             <div class="py-8 text-center text-xs text-neutral-500 font-mono">
-              <i class="fa-solid fa-spinner fa-spin mr-1"></i> Fetching weather for GPS location...
+              <i class="fa-solid fa-spinner fa-spin mr-1"></i> 正在獲取 GPS 當前位置天氣...
             </div>
           </div>
         </div>
@@ -304,38 +304,6 @@
       </section>
 
     </main>
-
-    <!-- BOTTOM SECTION: WORLD CLOCKS BAR -->
-    <footer class="eink-border-t grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x-2 divide-black dark:divide-white bg-white dark:bg-black">
-      
-      <!-- New York / Toronto Clock -->
-      <div class="p-3 text-center">
-        <div class="text-xs font-bold text-neutral-600 dark:text-neutral-400">紐約 / 多倫多 New York / Toronto</div>
-        <div class="flex items-center justify-center gap-2 mt-1">
-          <span id="time-ny-day" class="text-xs font-bold font-mono">--</span>
-          <span id="time-ny" class="font-display font-extrabold text-2xl tracking-tight">--:--</span>
-        </div>
-      </div>
-
-      <!-- London Clock -->
-      <div class="p-3 text-center">
-        <div class="text-xs font-bold text-neutral-600 dark:text-neutral-400">倫敦 London</div>
-        <div class="flex items-center justify-center gap-2 mt-1">
-          <span id="time-lon-day" class="text-xs font-bold font-mono">--</span>
-          <span id="time-lon" class="font-display font-extrabold text-2xl tracking-tight">--:--</span>
-        </div>
-      </div>
-
-      <!-- Sydney Clock -->
-      <div class="p-3 text-center">
-        <div class="text-xs font-bold text-neutral-600 dark:text-neutral-400">雪梨 / 悉尼 Sydney</div>
-        <div class="flex items-center justify-center gap-2 mt-1">
-          <span id="time-syd-day" class="text-xs font-bold font-mono">--</span>
-          <span id="time-syd" class="font-display font-extrabold text-2xl tracking-tight">--:--</span>
-        </div>
-      </div>
-
-    </footer>
 
     <!-- FOOTER STATUS & CONTROLS STRIP -->
     <div class="p-2 bg-slate-100 dark:bg-zinc-900 border-t-2 border-black dark:border-white flex flex-wrap items-center justify-between text-[11px] font-mono text-neutral-700 dark:text-neutral-300 gap-2">
@@ -408,7 +376,7 @@
         <div class="p-3 border border-neutral-400 bg-slate-50 dark:bg-zinc-800">
           <div class="font-bold mb-1">Senior-Friendly Features Active:</div>
           <ul class="list-disc list-inside text-[11px] leading-snug text-neutral-600 dark:text-neutral-400 space-y-0.5">
-            <li><strong>Transit Alerts:</strong> Detours & delays for Route 114 / 301.</li>
+            <li><strong>Transit Alerts:</strong> Traditional Chinese detours & delays for Route 114 / 301.</li>
             <li><strong>What to Wear:</strong> Clothing & safety advice tailored to weather.</li>
             <li><strong>Chinese News Digest:</strong> Local Calgary municipal summaries.</li>
           </ul>
@@ -502,7 +470,6 @@
 
     // --- INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
-      initClocks();
       getUserGPSLocation(); // Request live GPS location immediately
       initTransitTimes();
       renderTransitList();
@@ -545,14 +512,20 @@
             }
 
             if (statusLabel) {
-              statusLabel.innerHTML = `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS Active:</span> Routes 114 & 301 stops near (${latFormatted}°, ${lonFormatted}°)`;
+              statusLabel.innerHTML = currentLang === 'zh'
+                ? `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS 已定位：</span> 附近 114 及 301 號巴士站 (${latFormatted}°, ${lonFormatted}°)`
+                : `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS Active:</span> Routes 114 & 301 stops near (${latFormatted}°, ${lonFormatted}°)`;
             }
 
             const modalGpsText = document.getElementById('modal-gps-text');
             if (modalGpsText) modalGpsText.textContent = `Lat: ${latFormatted}, Lon: ${lonFormatted} (Acc: ±${currentCoords.accuracy}m)`;
 
             const accElem = document.getElementById('gps-accuracy-info');
-            if (accElem) accElem.textContent = `GPS Accuracy: ±${currentCoords.accuracy} meters`;
+            if (accElem) {
+              accElem.textContent = currentLang === 'zh' 
+                ? `GPS 準確度: ±${currentCoords.accuracy} 米` 
+                : `GPS Accuracy: ±${currentCoords.accuracy} meters`;
+            }
 
             if (gpsIcon) gpsIcon.classList.remove('animate-pulse');
 
@@ -564,10 +537,12 @@
           (error) => {
             console.warn("Geolocation access fallback:", error.message);
             if (statusLabel) {
-              statusLabel.textContent = "GPS permissions offline. Displaying Panorama Hills default stops.";
+              statusLabel.textContent = currentLang === 'zh' 
+                ? "未開啟 GPS 定位權限，顯示預設 Panorama Hills 車站。" 
+                : "GPS permissions offline. Displaying Panorama Hills default stops.";
             }
             if (stationName) {
-              stationName.textContent = currentLang === 'zh' ? '卡加利 • 629 Panatella Blvd NW (Default)' : 'Calgary • 629 Panatella Blvd NW (Default)';
+              stationName.textContent = currentLang === 'zh' ? '卡加利 • 629 Panatella Blvd NW (預設)' : 'Calgary • 629 Panatella Blvd NW (Default)';
             }
             if (coordsDisplay) coordsDisplay.textContent = `LAT: 51.1668°, LON: -114.0735°`;
             if (gpsIcon) gpsIcon.classList.remove('animate-pulse');
@@ -582,11 +557,7 @@
       }
     }
 
-    // --- CLOCK & WORLD TIME LOGIC ---
-    function initClocks() {
-      updateClocks();
-    }
-
+    // --- CLOCK LOGIC ---
     function updateClocks() {
       const now = new Date();
 
@@ -615,38 +586,6 @@
           dateElem.textContent = `${monthNames[now.getMonth()]} ${dateNum}, ${year} • ${daysEn[dayIdx]}`;
         }
       }
-
-      // World Clocks Calculation
-      updateWorldClock('time-ny', 'time-ny-day', 'America/New_York');
-      updateWorldClock('time-lon', 'time-lon-day', 'Europe/London');
-      updateWorldClock('time-syd', 'time-syd-day', 'Australia/Sydney');
-    }
-
-    function updateWorldClock(timeId, dayId, timeZone) {
-      try {
-        const now = new Date();
-        const formatter = new Intl.DateTimeFormat('en-US', {
-          timeZone,
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-          weekday: 'short'
-        });
-        const parts = formatter.formatToParts(now);
-        let h = '', m = '', day = '';
-        parts.forEach(p => {
-          if (p.type === 'hour') h = p.value;
-          if (p.type === 'minute') m = p.value;
-          if (p.type === 'weekday') day = p.value;
-        });
-        
-        const elemT = document.getElementById(timeId);
-        const elemD = document.getElementById(dayId);
-        if (elemT) elemT.textContent = `${h}:${m}`;
-        if (elemD) elemD.textContent = day;
-      } catch (e) {
-        console.error("World clock error:", e);
-      }
     }
 
     // --- CALGARY TRANSIT LOGIC ---
@@ -667,7 +606,9 @@
       const busSyncElem = document.getElementById('time-bus-sync');
       const busUpdatedElem = document.getElementById('transit-updated-time');
       if (busSyncElem) busSyncElem.textContent = timeStr;
-      if (busUpdatedElem) busUpdatedElem.textContent = `Updated: ${timeStr}`;
+      if (busUpdatedElem) {
+        busUpdatedElem.textContent = currentLang === 'zh' ? `更新時間: ${timeStr}` : `Updated: ${timeStr}`;
+      }
     }
 
     function updateTransitCountdown() {
@@ -719,6 +660,7 @@
 
         // Simulated distance to nearest GPS stop
         const approxDist = (80 + (idx * 45)).toString();
+        const distText = currentLang === 'zh' ? `車站距離約 ${approxDist} 米` : `Stop ~${approxDist}m away`;
 
         html += `
           <div class="eink-border-all p-3 bg-white dark:bg-zinc-900 transition-all hover:translate-x-0.5">
@@ -736,7 +678,7 @@
                   <div class="text-[11px] text-neutral-500 font-mono mt-0.5 flex items-center gap-2">
                     <span>${r.direction}</span>
                     <span>•</span>
-                    <span><i class="fa-solid fa-person-walking"></i> Stop ~${approxDist}m away</span>
+                    <span><i class="fa-solid fa-person-walking"></i> ${distText}</span>
                   </div>
                 </div>
               </div>
@@ -867,11 +809,11 @@
 
       // 1. Jacket / Outerwear Logic
       if (minT < 0) {
-        if (jacketElem) jacketElem.textContent = currentLang === 'zh' ? '嚴寒低溫，請穿厚羽絨服及帽子 gloves' : 'Cold freeze: Wear heavy winter parka & gloves';
+        if (jacketElem) jacketElem.textContent = currentLang === 'zh' ? '嚴寒低溫，請穿厚羽絨服及手套保暖' : 'Cold freeze: Wear heavy winter parka & gloves';
       } else if (minT < 10) {
         if (jacketElem) jacketElem.textContent = currentLang === 'zh' ? '早晚偏冷，建議穿厚外套或保暖風衣' : 'Chilly morning: Wear heavy jacket or coat';
       } else if (minT < 18) {
-        if (jacketElem) jacketElem.textContent = currentLang === me === 'zh' ? '清晨涼爽，建議帶薄外套/開衫' : 'Cool morning: Bring light jacket or sweater';
+        if (jacketElem) jacketElem.textContent = currentLang === 'zh' ? '清晨涼爽，建議帶薄外套或針織衫' : 'Cool morning: Bring light jacket or sweater';
       } else {
         if (jacketElem) jacketElem.textContent = currentLang === 'zh' ? '氣溫舒適，單衣短袖即可' : 'Warm weather: T-shirt or light shirt';
       }
@@ -934,7 +876,7 @@
       updateClothingAdvice(11, 23, 10, 1);
     }
 
-    // --- UI HELPERS & THEME CONTROLS ---
+    // --- UI HELPERS & LANGUAGE/THEME CONTROLS ---
     function toggleLang() {
       currentLang = (currentLang === 'zh') ? 'en' : 'zh';
       
@@ -945,6 +887,23 @@
         stationNameElem.textContent = currentLang === 'zh' 
           ? `當前位置 GPS Live (${latFormatted}°, ${lonFormatted}°)` 
           : `GPS Location (${latFormatted}°, ${lonFormatted}°)`;
+      }
+
+      const alertTitleElem = document.getElementById('alert-title-text');
+      const alertBadgeElem = document.getElementById('alert-badge-text');
+      const alertBodyElem = document.getElementById('alert-body-text');
+      const alertTimeElem = document.getElementById('alert-time-text');
+
+      if (currentLang === 'zh') {
+        if (alertTitleElem) alertTitleElem.textContent = '114號及301號路線特別服務通知';
+        if (alertBadgeElem) alertBadgeElem.textContent = '現正改道';
+        if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>114 號路線：</strong> Country Hills Blvd 附近現正實施改道，預計延誤約 10 至 15 分鐘。 | <strong>301 號快線：</strong> 班次服務正常。';
+        if (alertTimeElem) alertTimeElem.textContent = '更新於 10 分鐘前';
+      } else {
+        if (alertTitleElem) alertTitleElem.textContent = 'Route 114 & 301 Service Notice';
+        if (alertBadgeElem) alertBadgeElem.textContent = 'Detour Active';
+        if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>Route 114:</strong> Detour near Country Hills Blvd. Expect +10–15 min delays. | <strong>Route 301:</strong> Normal express frequency.';
+        if (alertTimeElem) alertTimeElem.textContent = 'Updated 10m ago';
       }
 
       const titleElem = document.getElementById('clothing-title');
