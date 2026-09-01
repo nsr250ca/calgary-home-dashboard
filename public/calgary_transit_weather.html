@@ -143,17 +143,17 @@
 
     </header>
 
-    <!-- CRITICAL TRANSIT SERVICE ALERTS BANNER (EXACT UPDATE TIMESTAMP) -->
+    <!-- CRITICAL TRANSIT SERVICE ALERTS BANNER -->
     <div id="transit-alerts-banner" class="eink-border-b bg-amber-100 dark:bg-amber-950/80 p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs border-l-8 border-amber-600">
       <div class="flex items-start gap-2.5">
         <span class="bg-black text-white px-2 py-0.5 font-bold text-xs">🚌 公交服務提示</span>
         <div>
           <div class="font-bold text-sm text-neutral-900 dark:text-amber-100 flex items-center gap-2">
-            <span id="alert-title-text">114號及301號路線特別服務通知</span>
+            <span id="alert-title-text">8號、114號及301號路線特別服務通知</span>
             <span id="alert-badge-text" class="bg-amber-800 text-white text-[10px] px-1.5 py-0.2 uppercase font-bold">現正改道</span>
           </div>
           <p id="alert-body-text" class="text-neutral-800 dark:text-amber-200 text-xs mt-0.5">
-            ⚠️ <strong>114 號路線：</strong> Country Hills Blvd 附近現正實施改道，預計延誤約 10 至 15 分鐘。 | <strong>301 號快線：</strong> 班次服務正常。
+            ⚠️ <strong>114 號路線：</strong> Country Hills Blvd 附近現正實施改道，預計延誤約 10 至 15 分鐘。 | <strong>8 號及 301 號快線：</strong> 班次服務正常。
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-bus text-xl"></i>
               <h2 class="font-bold text-lg md:text-xl tracking-tight uppercase">
-                路線 114 & 301 MAX 到站時間 <span class="text-xs font-normal normal-case block md:inline text-neutral-500 dark:text-neutral-400">Routes 114 & 301 GPS Schedule</span>
+                路線 8, 114 & 301 到站時間 <span class="text-xs font-normal normal-case block md:inline text-neutral-500 dark:text-neutral-400">Routes 8, 114 & 301 GPS Schedule</span>
               </h2>
             </div>
             
@@ -188,7 +188,7 @@
           <div class="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs bg-neutral-100 dark:bg-zinc-800/80 p-2 border-2 border-black dark:border-white">
             <div class="flex items-center gap-1.5 font-bold">
               <i class="fa-solid fa-street-view text-emerald-600"></i>
-              <span id="gps-status-label">正在計算您與最近巴士站的實際步行距離...</span>
+              <span id="gps-status-label">正在計算您與最近 8, 114 及 301 號巴士站之距離...</span>
             </div>
             <span id="transit-live-indicator" class="inline-flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 border border-black dark:border-white bg-white dark:bg-black">
               <span class="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse"></span>
@@ -215,7 +215,7 @@
             <div class="flex items-start gap-2">
               <span class="bg-black text-white dark:bg-white dark:text-black px-1 text-[10px] font-bold font-mono">巴士</span>
               <p class="text-neutral-800 dark:text-neutral-200">
-                <strong>114號公車路線改道：</strong> 因 Country Hills Blvd 路段施工，即日起往返班次可能延誤 10-15 分鐘。
+                <strong>114號公車路線改道：</strong> 因 Country Hills Blvd 路段施工，即日起往返班次可能延誤 10-15 分鐘；8號車服務如常。
               </p>
             </div>
             <div class="flex items-start gap-2">
@@ -376,7 +376,7 @@
         <div class="p-3 border border-neutral-400 bg-slate-50 dark:bg-zinc-800">
           <div class="font-bold mb-1">Senior-Friendly Features Active:</div>
           <ul class="list-disc list-inside text-[11px] leading-snug text-neutral-600 dark:text-neutral-400 space-y-0.5">
-            <li><strong>Transit Alerts:</strong> Traditional Chinese detours & delays for Route 114 / 301 with timestamp.</li>
+            <li><strong>Transit Alerts:</strong> Traditional Chinese detours & delays for Route 8 / 114 / 301.</li>
             <li><strong>What to Wear:</strong> Clothing & safety advice tailored to weather.</li>
             <li><strong>GPS Distance:</strong> Live distance to Calgary Transit stops.</li>
           </ul>
@@ -433,6 +433,30 @@
         color: 'bg-black text-white dark:bg-white dark:text-black',
         lat: 51.1664,
         lon: -114.0740
+      },
+      {
+        route: '8',
+        stop_id: '3862',
+        stop_name: '3862 - Country Hills BV @ Panatella BV NW (WB)',
+        dest_zh: '往 班夫特地 / 山麓醫院 Brentwood / Foothills Hospital',
+        dest_en: 'To Brentwood / Foothills Hospital',
+        type: 'bus',
+        direction: 'Outbound / SB',
+        color: 'bg-blue-900 text-white',
+        lat: 51.1665,
+        lon: -114.0732
+      },
+      {
+        route: '8',
+        stop_id: '3863',
+        stop_name: '3863 - Country Hills BV @ Panatella BV NW (EB)',
+        dest_zh: '往 北點總站 North Pointe Terminal',
+        dest_en: 'To North Pointe Terminal',
+        type: 'bus',
+        direction: 'Inbound / NB',
+        color: 'bg-blue-900 text-white',
+        lat: 51.1669,
+        lon: -114.0728
       },
       {
         route: '301 MAX Green',
@@ -534,8 +558,8 @@
 
             if (statusLabel) {
               statusLabel.innerHTML = currentLang === 'zh'
-                ? `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS 已定位：</span> 即時計算與 114 及 301 號巴士站之距離`
-                : `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS Active:</span> Live walking distances calculated for Stops 114 & 301`;
+                ? `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS 已定位：</span> 即時計算與 8, 114 及 301 號巴士站之距離`
+                : `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS Active:</span> Live walking distances calculated for Stops 8, 114 & 301`;
             }
 
             const modalGpsText = document.getElementById('modal-gps-text');
@@ -934,14 +958,14 @@
       const alertTimeElem = document.getElementById('alert-time-text');
 
       if (currentLang === 'zh') {
-        if (alertTitleElem) alertTitleElem.textContent = '114號及301號路線特別服務通知';
+        if (alertTitleElem) alertTitleElem.textContent = '8號、114號及301號路線特別服務通知';
         if (alertBadgeElem) alertBadgeElem.textContent = '現正改道';
-        if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>114 號路線：</strong> Country Hills Blvd 附近現正實施改道，預計延誤約 10 至 15 分鐘。 | <strong>301 號快線：</strong> 班次服務正常。';
+        if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>114 號路線：</strong> Country Hills Blvd 附近現正實施改道，預計延誤約 10 至 15 分鐘。 | <strong>8 號及 301 號快線：</strong> 班次服務正常。';
         if (alertTimeElem) alertTimeElem.textContent = `更新時間: ${lastAlertSyncTime || '16:10'}`;
       } else {
-        if (alertTitleElem) alertTitleElem.textContent = 'Route 114 & 301 Service Notice';
+        if (alertTitleElem) alertTitleElem.textContent = 'Route 8, 114 & 301 Service Notice';
         if (alertBadgeElem) alertBadgeElem.textContent = 'Detour Active';
-        if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>Route 114:</strong> Detour near Country Hills Blvd. Expect +10–15 min delays. | <strong>Route 301:</strong> Normal express frequency.';
+        if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>Route 114:</strong> Detour near Country Hills Blvd. Expect +10–15 min delays. | <strong>Routes 8 & 301:</strong> Normal express frequency.';
         if (alertTimeElem) alertTimeElem.textContent = `Updated: ${lastAlertSyncTime || '16:10'}`;
       }
 
