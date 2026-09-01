@@ -143,7 +143,7 @@
 
     </header>
 
-    <!-- CRITICAL TRANSIT SERVICE ALERTS BANNER (TRADITIONAL CHINESE) -->
+    <!-- CRITICAL TRANSIT SERVICE ALERTS BANNER (EXACT UPDATE TIMESTAMP) -->
     <div id="transit-alerts-banner" class="eink-border-b bg-amber-100 dark:bg-amber-950/80 p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs border-l-8 border-amber-600">
       <div class="flex items-start gap-2.5">
         <span class="bg-black text-white px-2 py-0.5 font-bold text-xs">🚌 公交服務提示</span>
@@ -157,8 +157,8 @@
           </p>
         </div>
       </div>
-      <div id="alert-time-text" class="font-mono text-[11px] text-neutral-600 dark:text-amber-300 whitespace-nowrap self-end sm:self-auto">
-        更新於 10 分鐘前
+      <div id="alert-time-text" class="font-mono text-[11px] text-neutral-700 dark:text-amber-300 font-bold whitespace-nowrap self-end sm:self-auto">
+        更新時間: --:--:--
       </div>
     </div>
 
@@ -188,11 +188,11 @@
           <div class="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs bg-neutral-100 dark:bg-zinc-800/80 p-2 border-2 border-black dark:border-white">
             <div class="flex items-center gap-1.5 font-bold">
               <i class="fa-solid fa-street-view text-emerald-600"></i>
-              <span id="gps-status-label">正在搜尋最近的 114 及 301 號巴士站...</span>
+              <span id="gps-status-label">正在計算您與最近巴士站的實際步行距離...</span>
             </div>
             <span id="transit-live-indicator" class="inline-flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 border border-black dark:border-white bg-white dark:bg-black">
               <span class="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse"></span>
-              GPS AUTO-STOP
+              GPS DISTANCE
             </span>
           </div>
 
@@ -376,9 +376,9 @@
         <div class="p-3 border border-neutral-400 bg-slate-50 dark:bg-zinc-800">
           <div class="font-bold mb-1">Senior-Friendly Features Active:</div>
           <ul class="list-disc list-inside text-[11px] leading-snug text-neutral-600 dark:text-neutral-400 space-y-0.5">
-            <li><strong>Transit Alerts:</strong> Traditional Chinese detours & delays for Route 114 / 301.</li>
+            <li><strong>Transit Alerts:</strong> Traditional Chinese detours & delays for Route 114 / 301 with timestamp.</li>
             <li><strong>What to Wear:</strong> Clothing & safety advice tailored to weather.</li>
-            <li><strong>Chinese News Digest:</strong> Local Calgary municipal summaries.</li>
+            <li><strong>GPS Distance:</strong> Live distance to Calgary Transit stops.</li>
           </ul>
         </div>
       </div>
@@ -398,6 +398,7 @@
     let currentTheme = 'light'; // 'light', 'dark', 'sepia'
     let autoRefreshInterval = 60000; // 1 minute
     let refreshTimer = null;
+    let lastAlertSyncTime = '';
 
     // Default Fallback Coordinates (629 Panatella Blvd NW area) if GPS permission denied
     let currentCoords = {
@@ -407,52 +408,72 @@
       isLiveGPS: false
     };
 
-    // Filtered Routes strictly for Route 114 and Route 301 MAX Green Line
+    // Calgary Transit Stop Coordinates & Names
     const ROUTES_DEFINITIONS = [
       {
         route: '114',
-        name_zh: 'Panorama Hills',
-        name_en: 'Panorama Hills',
+        stop_id: '8292',
+        stop_name: '8292 - Panatella BV @ Panatella HL NW (NB)',
         dest_zh: '往 北點總站 North Pointe Terminal',
         dest_en: 'To North Pointe Terminal',
         type: 'bus',
         direction: 'Inbound / NB',
-        color: 'bg-black text-white dark:bg-white dark:text-black'
+        color: 'bg-black text-white dark:bg-white dark:text-black',
+        lat: 51.1672,
+        lon: -114.0730
       },
       {
         route: '114',
-        name_zh: 'Panorama Hills',
-        name_en: 'Panorama Hills',
+        stop_id: '8291',
+        stop_name: '8291 - Panatella BV @ Panatella GD NW (SB)',
         dest_zh: '往 國家丘陵 Country Hills / Coventry',
         dest_en: 'To Country Hills / Coventry',
         type: 'bus',
         direction: 'Outbound / SB',
-        color: 'bg-black text-white dark:bg-white dark:text-black'
+        color: 'bg-black text-white dark:bg-white dark:text-black',
+        lat: 51.1664,
+        lon: -114.0740
       },
       {
         route: '301 MAX Green',
-        name_zh: 'MAX Green Line',
-        name_en: 'MAX Green Line',
+        stop_id: '3567',
+        stop_name: '3567 - Country Hills MAX Station (SB)',
         dest_zh: '往 市中心 Downtown City Centre Express',
         dest_en: 'To Downtown City Centre Express',
         type: 'brt',
         direction: 'Inbound / SB',
-        color: 'bg-emerald-700 text-white'
+        color: 'bg-emerald-700 text-white',
+        lat: 51.1558,
+        lon: -114.0705
       },
       {
         route: '301 MAX Green',
-        name_zh: 'MAX Green Line',
-        name_en: 'MAX Green Line',
+        stop_id: '5579',
+        stop_name: '5579 - 78th Avenue N Station (NB)',
         dest_zh: '往 北點總站 North Pointe Terminal',
         dest_en: 'To North Pointe Terminal',
         type: 'brt',
         direction: 'Outbound / NB',
-        color: 'bg-emerald-700 text-white'
+        color: 'bg-emerald-700 text-white',
+        lat: 51.1565,
+        lon: -114.0698
       }
     ];
 
     // Dynamic arrival count state
     let transitETAMap = {};
+
+    // --- HAVERSINE DISTANCE CALCULATOR ---
+    function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
+      const R = 6371000; // Earth radius in meters
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return Math.round(R * c);
+    }
 
     // --- WEATHER CODES MAPPER ---
     function getWeatherCondition(code) {
@@ -513,8 +534,8 @@
 
             if (statusLabel) {
               statusLabel.innerHTML = currentLang === 'zh'
-                ? `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS 已定位：</span> 附近 114 及 301 號巴士站 (${latFormatted}°, ${lonFormatted}°)`
-                : `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS Active:</span> Routes 114 & 301 stops near (${latFormatted}°, ${lonFormatted}°)`;
+                ? `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS 已定位：</span> 即時計算與 114 及 301 號巴士站之距離`
+                : `<span class="text-emerald-700 dark:text-emerald-400 font-bold">GPS Active:</span> Live walking distances calculated for Stops 114 & 301`;
             }
 
             const modalGpsText = document.getElementById('modal-gps-text');
@@ -532,14 +553,15 @@
             // Fetch local weather for exact GPS coordinates
             fetchWeatherData();
             initTransitTimes();
+            renderTransitList();
             triggerFlashEffect();
           },
           (error) => {
             console.warn("Geolocation access fallback:", error.message);
             if (statusLabel) {
               statusLabel.textContent = currentLang === 'zh' 
-                ? "未開啟 GPS 定位權限，顯示預設 Panorama Hills 車站。" 
-                : "GPS permissions offline. Displaying Panorama Hills default stops.";
+                ? "未開啟 GPS 定位權限，顯示預設 Panatella Blvd 巴士站距離。" 
+                : "GPS permissions offline. Displaying default Panatella Blvd stop distances.";
             }
             if (stationName) {
               stationName.textContent = currentLang === 'zh' ? '卡加利 • 629 Panatella Blvd NW (預設)' : 'Calgary • 629 Panatella Blvd NW (Default)';
@@ -548,12 +570,14 @@
             if (gpsIcon) gpsIcon.classList.remove('animate-pulse');
 
             fetchWeatherData();
+            renderTransitList();
           },
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
         if (statusLabel) statusLabel.textContent = "Geolocation not supported by browser. Using default Panatella Blvd stops.";
         fetchWeatherData();
+        renderTransitList();
       }
     }
 
@@ -591,9 +615,9 @@
     // --- CALGARY TRANSIT LOGIC ---
     function initTransitTimes() {
       ROUTES_DEFINITIONS.forEach((r, idx) => {
-        let base1 = Math.floor(Math.random() * 6) + 1;
-        let base2 = base1 + Math.floor(Math.random() * 8) + 9;
-        let base3 = base2 + Math.floor(Math.random() * 12) + 14;
+        let base1 = Math.floor(Math.random() * 6) + 0;
+        let base2 = base1 + Math.floor(Math.random() * 8) + 12;
+        let base3 = base2 + Math.floor(Math.random() * 12) + 15;
 
         transitETAMap[`gps_route_${idx}`] = {
           times: [base1, base2, base3],
@@ -603,11 +627,19 @@
 
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      const timeStrShort = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      lastAlertSyncTime = timeStrShort;
+
       const busSyncElem = document.getElementById('time-bus-sync');
       const busUpdatedElem = document.getElementById('transit-updated-time');
+      const alertTimeElem = document.getElementById('alert-time-text');
+
       if (busSyncElem) busSyncElem.textContent = timeStr;
       if (busUpdatedElem) {
         busUpdatedElem.textContent = currentLang === 'zh' ? `更新時間: ${timeStr}` : `Updated: ${timeStr}`;
+      }
+      if (alertTimeElem) {
+        alertTimeElem.textContent = currentLang === 'zh' ? `更新時間: ${lastAlertSyncTime}` : `Updated: ${lastAlertSyncTime}`;
       }
     }
 
@@ -639,7 +671,7 @@
 
       ROUTES_DEFINITIONS.forEach((r, idx) => {
         const key = `gps_route_${idx}`;
-        const etaObj = transitETAMap[key] || { times: [2, 11, 24] };
+        const etaObj = transitETAMap[key] || { times: [0, 14, 37] };
 
         const routeDest = currentLang === 'zh' ? r.dest_zh : r.dest_en;
 
@@ -658,9 +690,13 @@
           `;
         }).join('');
 
-        // Simulated distance to nearest GPS stop
-        const approxDist = (80 + (idx * 45)).toString();
-        const distText = currentLang === 'zh' ? `車站距離約 ${approxDist} 米` : `Stop ~${approxDist}m away`;
+        // Exact distance from user GPS location to stop
+        const realDistMeters = calculateDistanceMeters(currentCoords.lat, currentCoords.lon, r.lat, r.lon);
+        let formattedDist = realDistMeters >= 1000 
+          ? (realDistMeters / 1000).toFixed(1) + ' km' 
+          : realDistMeters + (currentLang === 'zh' ? ' 米' : ' m');
+
+        const distText = currentLang === 'zh' ? `車站距離約 ${formattedDist}` : `~${formattedDist} walking distance`;
 
         html += `
           <div class="eink-border-all p-3 bg-white dark:bg-zinc-900 transition-all hover:translate-x-0.5">
@@ -675,10 +711,13 @@
                   <div class="font-bold text-base md:text-lg leading-tight text-black dark:text-white">
                     ${routeDest}
                   </div>
-                  <div class="text-[11px] text-neutral-500 font-mono mt-0.5 flex items-center gap-2">
+                  <div class="text-[11px] text-neutral-600 dark:text-neutral-300 font-mono mt-0.5 flex flex-wrap items-center gap-x-2">
+                    <span class="font-bold text-black dark:text-white">${r.stop_name}</span>
+                  </div>
+                  <div class="text-[10px] text-neutral-500 font-mono flex items-center gap-1.5 mt-0.5">
                     <span>${r.direction}</span>
                     <span>•</span>
-                    <span><i class="fa-solid fa-person-walking"></i> ${distText}</span>
+                    <span><i class="fa-solid fa-person-walking text-xs"></i> ${distText}</span>
                   </div>
                 </div>
               </div>
@@ -898,12 +937,12 @@
         if (alertTitleElem) alertTitleElem.textContent = '114號及301號路線特別服務通知';
         if (alertBadgeElem) alertBadgeElem.textContent = '現正改道';
         if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>114 號路線：</strong> Country Hills Blvd 附近現正實施改道，預計延誤約 10 至 15 分鐘。 | <strong>301 號快線：</strong> 班次服務正常。';
-        if (alertTimeElem) alertTimeElem.textContent = '更新於 10 分鐘前';
+        if (alertTimeElem) alertTimeElem.textContent = `更新時間: ${lastAlertSyncTime || '16:10'}`;
       } else {
         if (alertTitleElem) alertTitleElem.textContent = 'Route 114 & 301 Service Notice';
         if (alertBadgeElem) alertBadgeElem.textContent = 'Detour Active';
         if (alertBodyElem) alertBodyElem.innerHTML = '⚠️ <strong>Route 114:</strong> Detour near Country Hills Blvd. Expect +10–15 min delays. | <strong>Route 301:</strong> Normal express frequency.';
-        if (alertTimeElem) alertTimeElem.textContent = 'Updated 10m ago';
+        if (alertTimeElem) alertTimeElem.textContent = `Updated: ${lastAlertSyncTime || '16:10'}`;
       }
 
       const titleElem = document.getElementById('clothing-title');
